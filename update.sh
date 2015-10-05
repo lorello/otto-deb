@@ -7,30 +7,30 @@ set -e
 GPG_KEY=2099F7A4
 
 BASEDIR=$(dirname $(realpath $0))
-VERSION=$(wget -q -O - https://bintray.com/api/v1/packages/mitchellh/vagrant/vagrant/ | jq -r .latest_version)
+VERSION=$(wget -q -O - https://bintray.com/api/v1/packages/mitchellh/otto/otto/ | jq -r .latest_version)
 
 # The choice of aptly was entirely arbitrary, but works fine.
 aptly="aptly -config=$BASEDIR/aptly.conf"
 
-if ! $aptly snapshot list | grep vagrant-$VERSION > /dev/null; then
-	mkdir /tmp/vagrant-$VERSION
-	cd /tmp/vagrant-$VERSION
+if ! $aptly snapshot list | grep otto-$VERSION > /dev/null; then
+	mkdir /tmp/otto-$VERSION
+	cd /tmp/otto-$VERSION
 	
 	# Download the packages
-	for package in vagrant_${VERSION}_{x86_64,i686}.deb; do
-		wget -nv https://dl.bintray.com/mitchellh/vagrant/$package
+	for package in otto_${VERSION}_{x86_64,i686}.deb; do
+		wget -nv https://dl.bintray.com/mitchellh/otto/$package
 	done
 	
 	# Add the packages to aptly
-	$aptly repo add vagrant-deb .
-	$aptly snapshot create vagrant-$VERSION from repo vagrant-deb
+	$aptly repo add otto-deb .
+	$aptly snapshot create otto-$VERSION from repo otto-deb
 
-	$aptly publish switch any vagrant-$VERSION
+	$aptly publish switch any otto-$VERSION
 	
 	# Clean up after ourselves
 	cd
-	rm /tmp/vagrant-$VERSION/*
-	rmdir /tmp/vagrant-$VERSION
+	rm /tmp/otto-$VERSION/*
+	rmdir /tmp/otto-$VERSION
 fi
 
 # Export variables for templating
